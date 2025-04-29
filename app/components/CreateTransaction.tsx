@@ -5,12 +5,12 @@ import { createTransaction } from "../../utils/api";
 export default function CreateTransaction() {
   const [description, setDescription] = useState<string>("");
   const [entries, setEntries] = useState<
-    { accountId: string; amount: number }[]
-  >([{ accountId: "", amount: 0 }]);
+    { accountId: number | null; amount: number }[]
+  >([{ accountId: null, amount: 0 }]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const handleAddEntry = () => {
-    setEntries([...entries, { accountId: "", amount: 0 }]);
+    setEntries([...entries, { accountId: null, amount: 0 }]);
   };
 
   const handleRemoveEntry = (index: number) => {
@@ -36,7 +36,7 @@ export default function CreateTransaction() {
       } else {
         totalCredit += Math.abs(entry.amount);
       }
-      if (entry.accountId.trim() === "") {
+      if (!entry.accountId || entry.accountId.toString().trim() === "") {
         setErrorMessage("Each entry must have a valid Account ID.");
         return false;
       }
@@ -78,9 +78,9 @@ export default function CreateTransaction() {
       await createTransaction(transactionData);
       alert("Transaction created successfully!");
       setDescription("");
-      setEntries([{ accountId: "", amount: 0 }]);
+      setEntries([{ accountId: null, amount: 0 }]);
     } catch (error: any) {
-      alert(error || "Error while creating transaction");
+      alert(error.response.data.message || "Error while creating transaction");
     }
   };
 
@@ -119,7 +119,7 @@ export default function CreateTransaction() {
                 type="text"
                 id={`accountId-${index}`}
                 className="w-full px-4 py-2 border rounded-md"
-                value={entry.accountId}
+                value={entry.accountId ?? ""}
                 onChange={(e) =>
                   handleEntryChange(index, "accountId", e.target.value)
                 }

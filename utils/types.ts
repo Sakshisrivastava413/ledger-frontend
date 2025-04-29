@@ -4,13 +4,13 @@ export type TransactionType = {
     description: string;
     amount: number;
     entries: {
-        accountId: string;
+        accountId: number;
         amount: number;
     }[];
 }
 
 export type FiltersType = {
-    accountId: string;
+    accountId: number | null;
     startDate: string;
     endDate: string;
 }

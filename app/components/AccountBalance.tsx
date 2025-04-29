@@ -3,16 +3,16 @@ import { useState } from "react";
 import { getAccountBalance } from "../../utils/api";
 
 export default function AccountBalance() {
-  const [accountId, setAccountId] = useState<string>("");
+  const [accountId, setAccountId] = useState<number | null>(null);
   const [balance, setBalance] = useState<number | null>(null);
 
   const handleCheckBalance = async () => {
     try {
-      const response = await getAccountBalance(accountId);
+      const response = await getAccountBalance(accountId?.toString() || "");
       setBalance(response.balance);
     } catch (error: any) {
       setBalance(null);
-      alert("Error: " + error);
+      alert("Error: " + error.response.data.message || 'Error while fetching balance');
     }
   };
 
@@ -24,11 +24,11 @@ export default function AccountBalance() {
           Account ID
         </label>
         <input
-          type="text"
+          type="number"
           id="accountId"
           className="w-full px-4 py-2 border rounded-md"
-          value={accountId}
-          onChange={(e) => setAccountId(e.target.value)}
+          value={accountId || ""}
+          onChange={(e) => setAccountId(Number(e.target.value))}
         />
       </div>
       <button

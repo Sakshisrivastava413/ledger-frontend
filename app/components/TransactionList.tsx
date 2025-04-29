@@ -5,7 +5,7 @@ import { FiltersType, TransactionType } from "../../utils/types";
 export default function TransactionList() {
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const [filters, setFilters] = useState<FiltersType>({
-    accountId: "",
+    accountId: null,
     startDate: "",
     endDate: "",
   });
@@ -25,8 +25,8 @@ export default function TransactionList() {
     try {
       const response = await getTransactions(filters);
       setTransactions(response.data);
-    } catch (error) {
-      alert("Error fetching transactions" + error);
+    } catch (error: any) {
+      alert(error.response.data.message || "Error while fetching transactions");
     }
   };
 
@@ -43,7 +43,7 @@ export default function TransactionList() {
           type="text"
           id="accountId"
           name="accountId"
-          value={filters.accountId}
+          value={filters.accountId ?? ""}
           onChange={handleFilterChange}
           className="border p-2 rounded-md"
         />
